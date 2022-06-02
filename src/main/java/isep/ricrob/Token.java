@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 import java.util.Random;
 
 
-public class Token {
+public abstract class Token {
 
     public Token(Color color) {
         this.color = color;
