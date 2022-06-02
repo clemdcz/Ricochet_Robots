@@ -1,7 +1,6 @@
 package isep.ricrob;
 
-import isep.utiliy.Directions;
-import javafx.application.Platform;
+import isep.utility.Directions;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -9,8 +8,6 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.image.ImageView;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.*;
 
 import static isep.ricrob.Game.Status.*;
@@ -18,6 +15,10 @@ import static isep.ricrob.Token.Color.*;
 
 
 public class Game {
+
+    // Classe importante avec notamment tout ce qui touche au mouvement du robot !!!
+
+
     // * Instance globale de gestion du jeu
     public static Game context;
     private final int TIME_PLAY = 120;
@@ -39,11 +40,13 @@ public class Game {
         return numberOfStepsProperty;
     }
 
+    // Reset le nombre de coups
     public void resetSteps(){
         this.numberOfSteps = 0;
         this.numberOfStepsProperty.setValue("Coups -  0");
     }
 
+    //Reset le Timer
     public void resetTimer(){
         Game.context.TIME_TO_CATCH.setValue(TIME_PLAY);
     }
@@ -178,7 +181,7 @@ public class Game {
     public void setTarget(Symbol target) {  this.target = target; }
     public ArrayList<Token> getSymbols() { return this.listSymbols; }
 
-
+    //Mouvement du robot
     public void moveRobot(Directions direction){
         boolean hasBeenMoved = false;
         boolean noObstacle = true;
@@ -217,7 +220,7 @@ public class Game {
                         noObstacle = false;
                         continue;
                     }
-                    //Condition sur la disponibilité des case
+                    //Condition sur la disponibilité des cases
                     if (!this.getTileAt((row +1),col).isAvailable()) break;
 
                     //Update robot position
@@ -290,15 +293,15 @@ public class Game {
         return board.get(index);
     }
 
+    //Vérifie si victoire
     private boolean checkIfWin(){
         var row = this.getSelectedRobot().getLig();
         var col = this.getSelectedRobot().getCol();
         var color = this.getSelectedRobot().getColor();
         var filePath = ((ImageView)this.getTarget().getGui()).getImage().getUrl();
-//        System.out.println("Player "+row+" "+col+" "+filePath);
+
 
         for(var symbol: listSymbols){
-//            System.out.println("symbol -" + symbol.getLig() + " " + symbol.getCol()+" "+((ImageView)symbol.getGui()).getImage().getUrl().equals(filePath));
             if (symbol.getLig() == row &&
                     symbol.getCol() == col &&
                     symbol.getColor() == color &&

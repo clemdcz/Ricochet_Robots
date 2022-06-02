@@ -1,9 +1,5 @@
 package isep.ricrob;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 
@@ -11,6 +7,8 @@ import java.util.Random;
 
 
 public abstract class Token {
+
+    // Classe avec méthodes et attributs servant pour les robots et les symboles
 
     public Token(Color color) {
         this.color = color;
@@ -21,7 +19,7 @@ public abstract class Token {
     private Color color;
     public Color getColor() { return this.color; }
 
-    // * Position
+    // Métohdes concernant la position
 
     public int col;
     public int lig;

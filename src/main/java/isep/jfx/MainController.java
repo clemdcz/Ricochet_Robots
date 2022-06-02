@@ -4,35 +4,22 @@ import isep.ricrob.Game;
 import isep.ricrob.Symbol;
 import isep.ricrob.Tile;
 import isep.ricrob.Token;
-import isep.utiliy.SymbolsRessources;
+import isep.utility.SymbolsRessources;
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.GestureEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeListenerProxy;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -62,16 +49,19 @@ public class MainController {
     @FXML
     public Label steps;
 
-//    @FXML
-//    public Button rejouerBtn;
-
     List<Tile> tiles;
+
+    //Dans cette classe MainController, on retrouve les méthodes suivantes :
+    // - Initialisation qui va créer le board en utilisant les méthodes nécessaires (createWalls, addSymbols, refreshTarget)
+    // - Une méthode pour récupérer le nom du joueur
+    // - Des méthodes pour reset et actualiser la position du robot
+    // - Tout ce qui tourne autour du timer
+    // - Restart le jeu
 
     // "initialize()" est appelé par JavaFX à l'affichage de la fenêtre
     @FXML
     public void initialize() {
 
-        //Bind labels to their values
         steps.textProperty().bind(Game.context.getNumberOfSteps());
         timeLabel.textProperty().bind(Game.context.TIME_TO_CATCH.asString());
 
@@ -88,17 +78,16 @@ public class MainController {
 
         // ... "cell.png" doit être placé à la racine de "resources/" (sinon PB)
         boardPane.setPadding(new Insets(2));
-        // boardPane.setBackground( new Background(new BackgroundFill(Color.BLACK,CornerRadii.EMPTY, Insets.EMPTY)));
 
         int rows = Game.SIZE;
         int cols = Game.SIZE;
         //rows = cols = 4;
         tiles = Game.context.getBoard();
 
-        //Starting timer
+        //Début du timer
         startTimer();
 
-        //Generate cells of the board
+        //On crée les cellules du plateau
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
 
@@ -130,13 +119,12 @@ public class MainController {
                 ImageView wuUL = new ImageView(wu);
                 ImageView wdUL = new ImageView(wd);
 
-                //wrUL.setX(-5);
+
 
 
                 Pane pane = new Pane();
                 pane.setPrefWidth(40);
                 pane.setPrefHeight(40);
-                //System.out.println(pane.widthProperty());
                 tileGui.fitWidthProperty().bind(pane.widthProperty());
                 pane.setLayoutX(0);
                 pane.setLayoutY(0);
@@ -151,7 +139,7 @@ public class MainController {
             }
         }
 
-        //Set the robots positions as no available
+        //On fixe les robots comme étant non disponibles
         for (var color : Token.Color.values()) {
             var robot = Game.context.getRobots().get(color);
             getTileAt(robot.getLig(), robot.getCol()).setAvailable(false);
@@ -161,7 +149,7 @@ public class MainController {
         createWalls();
 
 
-        //Generate randomly symbols on the walled tiles
+        //Ajout des symboles
         addSymbols();
 
         // Ajout des pièces
@@ -171,7 +159,7 @@ public class MainController {
         addRobot(YELLOW);
 
 
-        //Adding target
+        //Ajout de l'objectif
         refreshTarget();
 
         // "Binding JFX" - Synchronisation du "Label" avec l'état du jeu
@@ -179,6 +167,7 @@ public class MainController {
         Game.context.setStatus(Game.Status.CHOOSE_PLAYER);
     }
 
+    //Méthode pour aller chercher les coordonnées du celulle
     private Tile getTileAt(int row, int col) {
         int index = row * Game.SIZE + col;
         return tiles.get(index);
@@ -197,6 +186,7 @@ public class MainController {
         }
     }
 
+    //Ajout des robots
     private void addRobot(Token.Color color) {
         Token robot = Game.context.getRobots().get(color);
         ImageView robotGui = new ImageView(new Image(
@@ -210,6 +200,7 @@ public class MainController {
         robot.setGui(robotGui);
     }
 
+    // Update la position des robots
     private void updateSelectedRobotPosition() {
 
         Token robot = Game.context.getSelectedRobot();
@@ -224,6 +215,7 @@ public class MainController {
         startMessage.showAndWait();
     }
 
+    //Ajout de tous les murs
     private void createWalls() {
         // Murs extérieurs
         getTileAt(0, 0).setWall(true, false, true, false);
@@ -293,9 +285,8 @@ public class MainController {
         // Murs intérieurs
 
         getTileAt(1, 14).setWall(true, false, false, false);
-        //getTileAt(1,13).setWall(false,false,false,true);
-        getTileAt(2, 13).setWall(false, false, true, false);
 
+        getTileAt(2, 13).setWall(false, false, true, false);
         getTileAt(2, 6).setWall(true, false, false, false);
 
         getTileAt(3, 5).setWall(false, false, true, false);
@@ -372,9 +363,8 @@ public class MainController {
         addSymbol(4, 14, SymbolsRessources.greenSymbols[2], GREEN);
         addSymbol(6, 1, SymbolsRessources.greenSymbols[3], GREEN);
     }
-
-
-    private void addSymbol(int row, int col, String image, Token.Color color) {
+    //Ajout des symboles
+    public void addSymbol(int row, int col, String image, Token.Color color) {
         Token symbol = new Symbol(color);
         symbol.setPosition(col, row);
         var symbolGui = new ImageView(new Image(
@@ -389,10 +379,11 @@ public class MainController {
         Game.context.getSymbols().add(symbol);
     }
 
+    //Actualiser l'objectif
     private void refreshTarget() {
-        //Remove previous childs
+        //Enlever "l'enfant" précèdent
         targetDisplayed.getChildren().clear();
-        //Get new target
+        //Nouvelle objectif
         var random = new Random();
         var index = random.nextInt(Game.context.getSymbols().size());
         var newTarget = Game.context.getSymbols().get(index);
@@ -410,6 +401,7 @@ public class MainController {
 
     }
 
+    //Méthode du timer
     private void startTimer() {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -428,15 +420,15 @@ public class MainController {
                             restartGame();
                             Game.context.setStatus(Game.Status.CHOOSE_PLAYER);
                         });
-                        //timer.scheduleAtFixedRate(this, 0, 1000);
+
                     }
                     if (newValue > 0) {
                         Platform.runLater(() -> Game.context.TIME_TO_CATCH.setValue(newValue));
-                        //timeLabel.setText(Integer.toString(Game.context.TIME_TO_CATCH));
+
                     }
 
                 } else {
-                    //Hide restart game btn
+                    //Cacher le bouton restart
                     Platform.runLater(()-> rejouerBtn.setDisable(true));
                 }
 
@@ -445,6 +437,7 @@ public class MainController {
         }, 0, 1000);
     }
 
+    //Méthode pour reset la position des persos
     public void resetRobotsPositions(){
         Game.context.getRobots().forEach((color,robot) ->{
             getTileAt(robot.getLig() ,robot.getCol()).setAvailable(true);
@@ -457,6 +450,7 @@ public class MainController {
         });
     }
 
+    //Méthode pour recommencer le jeu
     public void restartGame() {
         this.refreshTarget();
         Game.context.resetTimer();
@@ -464,20 +458,10 @@ public class MainController {
         resetRobotsPositions();
     }
 
+    //Méthode pour restart le jeu
     public void restartGameAction(ActionEvent actionEvent) {
         //TODO
         System.out.println("Le jeu restart");
         Platform.runLater(this::restartGame);
     }
-
-//    @Override
-//    public void propertyChange(PropertyChangeEvent evt) {
-//        Game.Status newState = (Game.Status) evt.getNewValue();
-//        if (newState == Game.Status.PLAYER_WIN_TOKEN) {
-//            showWarning(newState.getToolTip() + ", temps de jouer " +
-//                    Game.context.TIME_TO_CATCH.getValue() + ", nombre de pas " +
-//                    Game.context.getNumberOfSteps().getValue() + " pas");
-//        }
-//        System.out.println(evt.getNewValue());
-//    }
 }

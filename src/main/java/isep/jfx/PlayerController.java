@@ -4,11 +4,12 @@ import isep.ricrob.Game;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class PlayerController {
+
+    //Classe qui va chercher le nom du joueur pour l'utiliser par la suite
 
     @FXML
     TextField nameTextField;

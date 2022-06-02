@@ -4,6 +4,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 public class Tile {
+
+    // Classe avec des méthodes servant à la création des murs
     boolean isAvailable = true;
     Pane pane;
     int row, col;
@@ -29,32 +31,6 @@ public class Tile {
         wallRight.setVisible(right);
         wallUp.setVisible(up);
         wallDown.setVisible(down);
-    }
-
-    private boolean [] getWallsState(){
-        return new boolean[]{wallLeft.isVisible(),wallRight.isVisible(),wallUp.isVisible(),wallDown.isVisible()};
-    }
-
-    public boolean isWalled(){
-        boolean [] walls  = getWallsState();
-        int counter = 0;
-        for (boolean wall : walls){
-            if (wall == true){
-                counter++;
-            }
-            if(counter > 1){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public int getRow() {
-        return row;
     }
 
     public void setAvailable(boolean state){

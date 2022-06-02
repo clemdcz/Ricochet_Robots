@@ -1,6 +1,9 @@
-package isep.utiliy;
+package isep.utility;
 
 public class SymbolsRessources {
+
+    //Vient chercher l'image pour les symboles
+
     public final  static String [] redSymbols = {"redMoon.png","redPlanet.png"
                                                     ,"redStar.png","redSun.png"};
     public final  static String [] blueSymbols = {"blueMoon.png","bluePlanet.png",
